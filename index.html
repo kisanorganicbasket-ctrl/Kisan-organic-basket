@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="hi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kisan Organic Basket</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial;background:#f5f8f2;color:#263328}
+header{background:#218838;color:white;text-align:center;padding:18px}
+input{margin:14px 15px;padding:12px;width:calc(100% - 30px);font-size:16px;border:1px solid #ccc;border-radius:8px}
+h3.section{margin:16px}.products{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:12px}
+.card,.cart{background:white;padding:14px;border-radius:12px;box-shadow:0 2px 7px #ddd;text-align:center}
+.emoji{font-size:38px}.price{color:#218838;font-weight:bold}.qty{display:flex;justify-content:center;align-items:center;gap:12px}
+button{background:#218838;color:white;border:0;border-radius:7px;padding:9px 13px;font-size:16px}
+.cart{margin:14px;text-align:left}.line{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eee}
+.total{text-align:right;font-size:20px;font-weight:bold;color:#218838;margin-top:12px}
+footer{text-align:center;padding:18px;background:#e5efe4;margin-top:14px}
+</style></head><body>
+<header><h2>🧺 Kisan Organic Basket</h2><p>ताज़ी सब्जी, फल, दूध और मटन आपके घर</p><p>🛒 Cart में सामान: <b id="count">0</b></p></header>
+<input id="search" placeholder="अपना सामान खोजें..." oninput="showProducts()">
+<h3 class="section">हमारे प्रोडक्ट</h3><div class="products" id="products"></div>
+<section class="cart"><h3>🛒 आपका Cart</h3><div id="cart">अभी Cart खाली है। सामान जोड़ें।</div><div class="total">कुल: ₹<span id="total">0</span></div></section>
+<footer><h3>Kisan Organic Basket</h3><p>डिलीवरी क्षेत्र: Dalsingsarai</p><p>यह अभ्यास के लिए Demo है।</p></footer>
+<script>
+const items=[{id:1,n:"आलू",e:"🥔",p:25,u:"किलो"},{id:2,n:"टमाटर",e:"🍅",p:30,u:"किलो"},{id:3,n:"सेब",e:"🍎",p:120,u:"किलो"},{id:4,n:"केला",e:"🍌",p:50,u:"दर्जन"},{id:5,n:"दूध",e:"🥛",p:60,u:"लीटर"},{id:6,n:"मटन",e:"🍖",p:700,u:"किलो"}];
+let cart={};
+function showProducts(){let q=document.getElementById("search").value;let a=items.filter(x=>x.n.includes(q));document.getElementById("products").innerHTML=a.map(x=>`<div class="card"><div class="emoji">${x.e}</div><h3>${x.n}</h3><p class="price">₹${x.p} / ${x.u}</p><div class="qty"><button onclick="change(${x.id},-1)">−</button><b>${cart[x.id]||0}</b><button onclick="change(${x.id},1)">+</button></div></div>`).join("")||"कोई सामान नहीं मिला।"}
+function change(id,d){let n=(cart[id]||0)+d;if(n<=0)delete cart[id];else cart[id]=n;showProducts();showCart()}
+function showCart(){let count=0,total=0,rows=[];items.forEach(x=>{let q=cart[x.id]||0;if(q){count+=q;total+=q*x.p;rows.push(`<div class="line"><span>${x.n} × ${q} ${x.u}</span><b>₹${q*x.p}</b></div>`)}});document.getElementById("count").textContent=count;document.getElementById("cart").innerHTML=rows.join("")||"अभी Cart खाली है। सामान जोड़ें।";document.getElementById("total").textContent=total}
+showProducts();showCart();
+</script></body></html>
