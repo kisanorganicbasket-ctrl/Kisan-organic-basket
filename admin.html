@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kisan Basket Admin</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial;background:#f1f5f1;color:#222}
+header{background:#167b36;color:white;padding:20px}
+header h2{margin:0}
+nav{background:#fff;padding:15px;display:flex;gap:20px;flex-wrap:wrap}
+nav a{color:#167b36;text-decoration:none;font-weight:bold}
+main{padding:20px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:15px}
+.card{background:white;padding:20px;border-radius:12px;box-shadow:0 2px 8px #ddd}
+.card h3{color:#167b36}
+button{background:#167b36;color:white;border:0;padding:12px;border-radius:7px;cursor:pointer}
+input{padding:12px;width:100%;margin:8px 0;border:1px solid #ccc;border-radius:6px}
+table{width:100%;background:white;margin-top:15px;border-collapse:collapse}
+td,th{padding:12px;border:1px solid #ddd;text-align:left}
+section{margin-top:25px}
+</style>
+</head>
+<body>
+<header>
+<h2>🌾 Kisan Basket Admin Panel</h2>
+<p>Welcome to Your Business Dashboard</p>
+</header>
+<nav>
+<a href="#home">Dashboard</a>
+<a href="#products">Products</a>
+<a href="#orders">Orders</a>
+</nav>
+<main>
+<section id="home">
+<h2>Dashboard</h2>
+<div class="cards">
+<div class="card"><h3>Total Orders</h3><h2 id="ordersCount">0</h2></div>
+<div class="card"><h3>Total Products</h3><h2 id="productCount">0</h2></div>
+<div class="card"><h3>Business</h3><h2>Active</h2></div>
+</div>
+</section>
+
+<section id="products">
+<h2>➕ Add New Product</h2>
+<div class="card">
+<input id="name" placeholder="Product Name">
+<input id="price" type="number" placeholder="Product Price">
+<input id="stock" type="number" placeholder="Stock Quantity">
+<button onclick="addProduct()">Add Product</button>
+</div>
+<h2>Product List</h2>
+<table>
+<thead><tr><th>Name</th><th>Price</th><th>Stock</th></tr></thead>
+<tbody id="productList"></tbody>
+</table>
+</section>
+
+<section id="orders">
+<h2>🛒 Orders</h2>
+<p>यहाँ आपके ऑर्डर दिखाई देंगे।</p>
+</section>
+</main>
+
+<script>
+let products=[];
+function addProduct(){
+let name=document.getElementById('name').value;
+let price=document.getElementById('price').value;
+let stock=document.getElementById('stock').value;
+if(!name||!price||!stock){alert('सभी जानकारी भरें');return;}
+products.push({name,price,stock});
+document.getElementById('productList').innerHTML=products.map(p=>
+`<tr><td>${p.name}</td><td>₹${p.price}</td><td>${p.stock}</td></tr>`).join('');
+document.getElementById('productCount').innerText=products.length;
+document.getElementById('name').value='';
+document.getElementById('price').value='';
+document.getElementById('stock').value='';
+}
+</script>
+</body>
+</html>
