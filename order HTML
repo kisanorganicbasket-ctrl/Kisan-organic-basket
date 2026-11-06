@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kisan Organic Basket Order</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f1f8ed;
+  margin: 0;
+  padding: 15px;
+}
+.container {
+  max-width: 700px;
+  margin: auto;
+}
+header {
+  background: #16813a;
+  color: white;
+  padding: 20px;
+  text-align: center;
+  border-radius: 12px;
+}
+.card {
+  background: white;
+  padding: 18px;
+  margin-top: 15px;
+  border-radius: 12px;
+}
+h2 { color: #16813a; }
+label {
+  display: block;
+  margin-top: 14px;
+  font-weight: bold;
+}
+input, textarea {
+  width: 100%;
+  padding: 12px;
+  margin-top: 6px;
+  box-sizing: border-box;
+  border: 1px solid #aaa;
+  border-radius: 7px;
+  font-size: 16px;
+}
+textarea { min-height: 75px; }
+.product {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #ddd;
+}
+button {
+  background: #16813a;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 7px;
+  font-size: 16px;
+}
+.qty button { padding: 7px 13px; }
+.total {
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 15px;
+}
+.submit {
+  width: 100%;
+  margin-top: 20px;
+  padding: 15px;
+  font-weight: bold;
+  font-size: 18px;
+}
+#result {
+  white-space: pre-wrap;
+  display: none;
+  background: #e7f7e7;
+  padding: 15px;
+  margin-top: 15px;
+  border-radius: 8px;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<header>
+  <h1>🧺 Kisan Organic Basket</h1>
+  <p>Fresh • Healthy • Local</p>
+  <p>Delivery Area: Dalsingsarai (10 KM)</p>
+</header>
+
+<div class="card">
+<h2>ग्राहक की जानकारी भरें</h2>
+
+<form id="orderForm">
+
+<label>ग्राहक का नाम *</label>
+<input id="name" type="text"
+placeholder="अपना नाम लिखें" required>
+
+<label>मोबाइल नंबर *</label>
+<input id="mobile" type="tel"
+inputmode="numeric"
+maxlength="10"
+pattern="[6-9][0-9]{9}"
+placeholder="10 अंकों का मोबाइल नंबर"
+title="10 अंकों का सही मोबाइल नंबर डालें"
+required>
+
+<label>PIN Code *</label>
+<input id="pin" type="text"
+inputmode="numeric"
+maxlength="6"
+pattern="[0-9]{6}"
+placeholder="6 अंकों का PIN Code"
+required>
+
+<label>पूरा डिलीवरी पता *</label>
+<textarea id="address"
+placeholder="मोहल्ला, गाँव, सड़क आदि लिखें"
+required></textarea>
+
+<h2>सामान चुनें</h2>
+<div id="products"></div>
+
+<div class="total">
+कुल सामान की कीमत: ₹<span id="total">0</span>
+</div>
+
+<label>भुगतान का तरीका *</label>
+<label>
+<input type="radio" name="payment"
+value="Cash on Delivery" checked
+style="width:auto"> Cash on Delivery
+</label>
+<label>
+<input type="radio" name="payment"
+value="UPI" style="width:auto"> UPI
+</label>
+
+<button class="submit" type="submit">
+ऑर्डर सबमिट करें
+</button>
+
+</form>
+
+<div id="result"></div>
+</div>
+</div>
+
+<script>
+const items = [
+  {name:"आलू", price:30, qty:0},
+  {name:"टमाटर", price:40, qty:0},
+  {name:"सेब", price:120, qty:0},
+  {name:"केला", price:50, qty:0},
+  {name:"दूध", price:60, qty:0},
+  {name:"मटन", price:700, qty:0}
+];
+
+function showProducts() {
+  const box = document.getElementById("products");
+  box.innerHTML = "";
+
+  items.forEach((item, i) => {
+    box.innerHTML += `
+      <div class="product">
+        <div>
+          <b>${item.name}</b><br>
+          ₹${item.price} प्रति यूनिट
+        </div>
+        <div class="qty">
+          <button type="button"
+          onclick="changeQty(${i},-1)">−</button>
+
+          <span>${item.qty}</span>
+
+          <button type="button"
+          onclick="changeQty(${i},1)">+</button>
+        </div>
+      </div>
+    `;
+  });
+
+  calculateTotal();
+}
+
+function changeQty(i, change) {
+  items[i].qty = Math.max(0, items[i].qty + change);
+  showProducts();
+}
+
+function calculateTotal() {
+  let total = 0;
+  items.forEach(item => {
+    total += item.price * item.qty;
+  });
+  document.getElementById("total").textContent = total;
+  return total;
+}
+
+document.getElementById("orderForm")
+.addEventListener("submit", function(event) {
+
+  event.preventDefault();
+
+  if (!items.some(item => item.qty > 0)) {
+    alert("कृपया कम-से-कम एक सामान चुनें।");
+    return;
+  }
+
+  const name = document.getElementById("name").value.trim();
+  const mobile = document.getElementById("mobile").value.trim();
+  const pin = document.getElementById("pin").value.trim();
+  const address = document.getElementById("address").value.trim();
+
+  const payment =
+    document.querySelector('input[name="payment"]:checked').value;
+
+  let bill = items
+    .filter(item => item.qty > 0)
+    .map(item =>
+      `${item.name}: ${item.qty} × ₹${item.price} = ₹${item.qty * item.price}`
+    ).join("\n");
+
+  const result = `
+KISAN ORGANIC BASKET
+
+ग्राहक: ${name}
+मोबाइल: ${mobile}
+PIN Code: ${pin}
+पता: ${address}
+
+सामान:
+${bill}
+
+कुल सामान की कीमत: ₹${calculateTotal()}
+भुगतान: ${payment}
+
+धन्यवाद!
+`;
+
+  const output = document.getElementById("result");
+  output.textContent = result;
+  output.style.display = "block";
+  output.scrollIntoView({behavior:"smooth"});
+});
+
+showProducts();
+</script>
+
+</body>
+</html>
